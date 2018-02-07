@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapping to functions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.5.2/Rx.js"></script>
+    <style>
+        .box{
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background-color: #090;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box"></div>
+
+<script>
+    const box = document.getElementById('box');
+
+    const rightArrow$ = Rx.Observable.fromEvent(document, 'keydown')
+        .filter(event => event.key === 'ArrowRight')
+        .mapTo(position => increment(position, 'x', 10));
+
+    const leftArrow$ = Rx.Observable.fromEvent(document, 'keydown')
+        .filter(event => event.key === 'ArrowLeft')
+        .mapTo(position => decrement(position, 'x', 10));
+
+    const upArrow$ = Rx.Observable.fromEvent(document, 'keydown')
+        .filter(event => event.key === 'ArrowUp')
+        .mapTo(position => decrement(position, 'y', 10));
+
+    const dowArrow$ = Rx.Observable.fromEvent(document, 'keydown')
+        .filter(event => event.key === 'ArrowDown')
+        .mapTo(position => increment(position, 'y', 10));
+
+    Rx.Observable.merge(rightArrow$, leftArrow$, upArrow$, dowArrow$)
+        .startWith({x: 0, y: 0})
+        .scan((acc, curr) => curr(acc))
+        .subscribe(position => {
+            console.log(position);
+            box.style.left = position.x + 'px';
+            box.style.top = position.y + 'px';
+        })
+
+    function increment(obj, prop, value) {
+        return {...obj, [prop]: obj[prop] + value};
+    }
+
+    function decrement(obj, prop, value) {
+        return {...obj, [prop]: obj[prop] - value};
+    }
+</script>
+</body>
+</html>
