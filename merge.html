@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scan</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.5.2/Rx.js"></script>
+    <style>
+        .box{
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background-color: #090;
+        }
+    </style>
+</head>
+<body>
+<button id="btnMoveLeft">Move Left</button>
+<button id="btnMoveRight">Move Right</button>
+<div class="box" id="box"></div>
+
+<script>
+    const btnMoveLeft = document.getElementById('btnMoveLeft');
+    const btnMoveRight = document.getElementById('btnMoveRight');
+    const box = document.getElementById('box');
+
+    const left$ = Rx.Observable.fromEvent(btnMoveLeft, 'click')
+        .map(event => -10);
+
+    const right$ = Rx.Observable.fromEvent(btnMoveRight, 'click')
+        .map(event => 10);
+
+    Rx.Observable.merge(left$, right$)
+        .startWith({x: 0, y: 0})
+        .scan((acc, cur) => {return {...acc, x: acc.x + cur};})
+        .subscribe(e => {
+            box.style.left = e.x + 'px';
+        })
+</script>
+</body>
+</html>
