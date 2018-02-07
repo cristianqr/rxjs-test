@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>From Event</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.5.6/Rx.js"></script>
+</head>
+<body>
+    <button>From event</button>
+    <button id="scan">Scan</button>
+    <script>
+        var button = document.querySelector('button');
+        Rx.Observable.fromEvent(button, 'click')
+            .subscribe(() => {
+                console.log('clicked');
+            });
+    </script>
+</body>
+</html>
